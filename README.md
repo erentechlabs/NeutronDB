@@ -1,13 +1,22 @@
-# NeutronDB API
+# NeutronDB API by MasterCockatoo
 
 ![Java](https://img.shields.io/badge/Java-24-blue.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
 ![Maven](https://img.shields.io/badge/build-Maven-red.svg)
-![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)
 
 NeutronDB is a RESTful API backend built with Spring Boot. It's designed to store and manage video game performance reports, with a special focus on compatibility across different operating systems and hardware configurations. This backend provides all the necessary endpoints to create, read, update, and delete (CRUD) games and their associated performance reports.
 
-This project is intended as the data source for the [NeutronDB Frontend](https://github.com/YOUR_USERNAME/YOUR_FRONTEND_REPO_NAME) application.
+This project is intended as the data source for the [NeutronDB Frontend](https://github.com/MasterCockatoo/NeutronDB-Frontend) application.
+
+## 🖼️ Application Preview
+
+A preview of the NeutronDB frontend in action. 
+
+*(**Note:** Replace the placeholder image below with an actual screenshot or GIF of your running application. You can drag and drop an image directly into the GitHub text editor to upload it.)*
+
+![NeutronDB Frontend Preview](https://raw.githubusercontent.com/MasterCockatoo/NeutronDB/main/docs/screenshot.png) 
+// You need to replace this link with the link of the screenshot you uploaded to github.
+
 
 ## ✨ Features
 
@@ -16,14 +25,13 @@ This project is intended as the data source for the [NeutronDB Frontend](https:/
 - **RESTful Architecture:** Provides an intuitive API using standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`).
 - **DTO Layer:** Utilizes the Data Transfer Object (DTO) pattern for clean and secure data transfer.
 - **Service Layer:** All business logic is encapsulated within the service layer.
-- **Database Agnostic:** Built with Spring Data JPA, allowing for easy transition from the default H2 in-memory database to others like PostgreSQL or MySQL.
+- **Database Agnostic:** Built with Spring Data JPA, allowing for easy configuration with major SQL databases like PostgreSQL, MySQL, and others.
 
 ## 🛠️ Technology Stack
 
 - **Framework**: Spring Boot 3.x
 - **Language**: Java 24
-- **Data Persistence**: Spring Data JPA
-- **Database**: H2 In-Memory Database (for easy setup)
+- **Data Persistence**: Spring Data JPA / Hibernate
 - **API**: Spring Web (REST Controllers)
 - **Utilities**: Lombok, Spring Boot DevTools
 - **Build Tool**: Apache Maven
@@ -36,24 +44,26 @@ Follow these steps to get the project running on your local machine.
 
 - JDK 24 or later
 - Apache Maven
-- Git
+- A running SQL database instance (e.g., PostgreSQL, MySQL)
 
 ### Steps
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-    cd YOUR_REPO_NAME
+    git clone [https://github.com/MasterCockatoo/NeutronDB.git](https://github.com/MasterCockatoo/NeutronDB.git)
+    cd NeutronDB
     ```
 
-2.  **Compile and run the project using Maven:**
+2.  **Configure the database connection:**
+    - Open the `src/main/resources/application.properties` file.
+    - Add the connection properties for your database, including the URL, username, and password. See the **Configuration** section below for an example using PostgreSQL.
+
+3.  **Compile and run the project using Maven:**
     ```bash
     mvn spring-boot:run
     ```
 
-3.  The application will start on the default port `8080`.
-    - You can verify that the API is running by navigating to `http://localhost:8080/games` in your browser. You should see an empty array (`[]`).
-    - You can access the H2 database console at `http://localhost:8080/h2-console` (see `application.properties` for connection details).
+4.  The application will start on the default port `8080`. You can now send requests to the API endpoints.
 
 ## API Endpoints
 
@@ -84,10 +94,10 @@ Follow these steps to get the project running on your local machine.
 curl -X POST http://localhost:8080/games \
 -H "Content-Type: application/json" \
 -d '{
-    "name": "Baldur''s Gate 3",
-    "developer": "Larian Studios",
-    "genre": "CRPG",
-    "platforms": ["WINDOWS", "MACOS"],
+    "name": "Elden Ring",
+    "developer": "FromSoftware",
+    "genre": "Action RPG",
+    "platforms": ["WINDOWS"],
     "deckVerifiedStatus": true
 }'
 ```
@@ -98,41 +108,37 @@ curl -X POST http://localhost:8080/reports \
 -H "Content-Type: application/json" \
 -d '{
     "gameId": 1,
-    "body": "Runs great with Proton-GE. Performance is excellent even in Act 3.",
-    "verdict": "GOLD",
+    "body": "Runs flawlessly on high settings with a stable frame rate.",
+    "verdict": "PLATINUM",
     "instability": "STABLE",
-    "overallRating": "9/10",
+    "overallRating": "10/10",
     "multiplayerRating": "8/10",
-    "distro": "EndeavourOS",
-    "kernel": "6.9.9-zen1-1-zen",
+    "distro": "Fedora 40",
+    "kernel": "6.9.5-200.fc40.x86_64",
     "ramGb": 32,
-    "gpuDriver": "Mesa 24.1.4",
-    "gpuModel": "AMD Radeon RX 7800 XT",
-    "cpuModel": "AMD Ryzen 7 7800X3D"
+    "gpuDriver": "Mesa 24.1.2",
+    "gpuModel": "AMD Radeon RX 6600",
+    "cpuModel": "AMD Ryzen 5 3600"
 }'
 ```
 
 ## ⚙️ Configuration
 
-The project uses an H2 in-memory database by default. You can change the database configuration in the `src/main/resources/application.properties` file.
+This project requires a connection to an SQL database. You must provide the configuration details in the `src/main/resources/application.properties` file.
 
-**Default H2 Configuration:**
+Below is a sample configuration for connecting to a **PostgreSQL** database.
+
 ```properties
-# H2 Database Settings
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
+# PostgreSQL Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/your_database_name
+spring.datasource.username=your_postgres_username
+spring.datasource.password=your_postgres_password
 
-# Data Source Settings
-spring.datasource.url=jdbc:h2:mem:neutrondb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=password
+# JPA / Hibernate Settings
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
-# JPA Settings
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+# When set to "update", Hibernate will automatically update the database schema
+# based on your entities. Use "validate" in production.
 spring.jpa.hibernate.ddl-auto=update
 ```
-
-## 📄 License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+*Remember to replace the placeholder values (`your_database_name`, `your_postgres_username`, `your_postgres_password`) with your actual database credentials.*
