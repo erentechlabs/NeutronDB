@@ -6,7 +6,7 @@
 
 NeutronDB is a RESTful API backend built with Spring Boot. It's designed to store and manage video game performance reports, with a special focus on compatibility across different operating systems and hardware configurations. This backend provides all the necessary endpoints to create, read, update, and delete (CRUD) games and their associated performance reports.
 
-This project is intended as the data source for the [NeutronDB Frontend](https://github.com/MasterCockatoo/NeutronDB-Frontend) application.
+This repository contains the full-stack NeutronDB application, including the Spring Boot REST API backend and the user interface that consumes it.
 ## 🖼️ Application Preview
 
 Here are some snapshots of the NeutronDB frontend in action:
