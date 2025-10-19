@@ -7,6 +7,41 @@
 
 A RESTful API backend built with Spring Boot for managing video game performance reports across different operating systems and hardware configurations. This backend provides comprehensive CRUD operations for games and their associated performance reports.
 
+## 🖼️ Application Preview
+
+Here are some snapshots of the NeutronDB frontend in action:
+
+<br>
+
+<div align="center">
+  
+  <h3>Adding a New Game</h3>
+  <img width="800" alt="add_game" src="https://github.com/user-attachments/assets/82f1538b-a26f-4887-b1d0-1beade3b9742" />
+  
+  <br><br>
+  
+  <h3>Listing Reports for a Cyberpunk 2077</h3>
+  <img width="800" alt="list_reports" src="https://github.com/user-attachments/assets/6a3c5746-f5dd-425e-8d28-580b41c95caa" />
+  
+  <br><br>
+  
+  <h3>Editing an Existing Report</h3>
+  <img width="800" alt="edit_reportt" src="https://github.com/user-attachments/assets/fc49be73-028e-4462-8a15-4ad572a8c846" />
+  
+  <br><br>
+  
+  <h3>Creating a New Report</h3>
+  <img width="800" alt="new_report" src="https://github.com/user-attachments/assets/a524016d-23be-4490-8995-9df9a6b823bb" />
+  
+  <br><br>
+  
+  <h3>Listing Reports - Stardew Valley Example</h3>
+  <img width="800" alt="list_reports_stardew" src="https://github.com/user-attachments/assets/64f56515-42cb-40bd-92f2-a2d2fa6ff07e" />
+  
+</div>
+
+<br>
+
 ## 📋 Table of Contents
 
 - [Architecture Overview](#architecture-overview)
@@ -361,20 +396,6 @@ Add dependencies to `pom.xml` and run:
 ```bash
 mvn clean install
 ```
-
----
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## 👨‍💻 Author
-
-Developed by [MasterCockatoo](https://github.com/MasterCockatoo)
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
 
 ---
 
