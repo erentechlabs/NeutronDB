@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/reports")
+@RequestMapping("/api/v1/reports")
 @RestController
 public class ReportController {
 

@@ -1,19 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Spring Boot API'nizin adresi
     const API_URL = 'http://localhost:8080';
 
-    // --- Sabit Değerler (Backend Enum'ları ile aynı olmalı) ---
     const PLATFORMS = ["WINDOWS", "LINUX", "MACOS"];
     const VERDICTS = ["GOLD", "BORKED", "NATIVE", "BRONZE", "PLATINUM", "SILVER"];
     const INSTABILITIES = ["STABLE", "FREQUENT_CRASHES", "UNPLAYABLE", "MINOR_ISSUES"];
 
-    // --- Genel Durum (State) ---
     let allGames = [];
     let allReports = [];
     let selectedGameId = null;
 
-    // --- DOM Elementleri ---
     const gamesListEl = document.getElementById('games-list');
     const welcomeMessageEl = document.getElementById('welcome-message');
     const gameDetailsViewEl = document.getElementById('game-details-view');
@@ -23,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameForm = document.getElementById('game-form');
     const reportForm = document.getElementById('report-form');
 
-    // --- API İstek Yardımcısı ---
     const apiRequest = async (endpoint, method = 'GET', body = null) => {
         try {
             const options = {
@@ -43,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (response.status === 204 || method === 'DELETE') {
-                return null; // DELETE veya No Content durumlarında body olmaz
+                return null;
             }
             return await response.json();
         } catch (error) {
@@ -52,8 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
     };
-    
-    // --- GÖRSELLEŞTİRME FONKSİYONLARI ---
+
     const renderGameList = () => {
         gamesListEl.innerHTML = '';
         allGames.sort((a, b) => a.name.localeCompare(b.name)).forEach(game => {
@@ -99,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- ÇEKİRDEK MANTIK & EYLEMLER ---
+
     const selectGame = (gameId) => {
         selectedGameId = gameId;
         renderGameList();
@@ -108,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteGame = async (gameId) => {
         if (confirm(`// Confirm deletion protocol for game ID ${gameId}. \n// This action cannot be undone.`)){
-            await apiRequest(`/games/${gameId}`, 'DELETE');
+            await apiRequest(`/api/v1/games/${gameId}`, 'DELETE');
             selectedGameId = null;
             await initializeApp();
         }
@@ -116,13 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteReport = async (reportId) => {
         if (confirm(`// Confirm the deletion protocol for the report with ID ${reportId}.`)) {
-            await apiRequest(`/reports/${reportId}`, 'DELETE');
-            allReports = await apiRequest('/reports') || [];
+            await apiRequest(`/api/v1/reports/${reportId}`, 'DELETE');
+            allReports = await apiRequest('/api/v1/reports') || [];
             renderReportsForSelectedGame();
         }
     };
 
-    // --- MODALLAR & FORMLAR ---
     const populateCheckboxes = (container, values) => {
         container.innerHTML = '';
         values.forEach(value => {
@@ -142,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('game-modal-title').textContent = gameId ? 'Edit Game Data' : 'Write New Game Data';
         gameForm.dataset.editId = gameId || '';
         if (gameId) {
-            const game = await apiRequest(`/games/${gameId}`);
+            const game = await apiRequest(`/api/v1/games/${gameId}`);
             if (game) {
                 document.getElementById('game-name').value = game.name;
                 document.getElementById('game-developer').value = game.developer;
@@ -168,9 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
             deckVerifiedStatus: document.getElementById('game-deckVerifiedStatus').value === 'true'
         };
         if (editId) {
-            await apiRequest(`/games/${editId}`, 'PUT', gameData);
+            await apiRequest(`/api/v1/games/${editId}`, 'PUT', gameData);
         } else {
-            await apiRequest('/games', 'POST', gameData);
+            await apiRequest('/api/v1/games', 'POST', gameData);
         }
         gameModalEl.style.display = 'none';
         await initializeApp();
@@ -188,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (reportId) {
-            const report = await apiRequest(`/reports/${reportId}`);
+            const report = await apiRequest(`/api/v1/reports/${reportId}`);
             if (report) {
                 gameSelector.value = report.gameId;
                 gameSelector.disabled = true;
@@ -227,16 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
             cpuModel: document.getElementById('report-cpuModel').value,
         };
         if (editId) {
-            await apiRequest(`/reports/${editId}`, 'PUT', reportData);
+            await apiRequest(`/api/v1/reports/${editId}`, 'PUT', reportData);
         } else {
-            await apiRequest('/reports', 'POST', reportData);
+            await apiRequest('/api/v1/reports', 'POST', reportData);
         }
         reportModalEl.style.display = 'none';
-        allReports = await apiRequest('/reports') || [];
+        allReports = await apiRequest('/api/v1/reports') || [];
         renderReportsForSelectedGame();
     });
 
-    // --- OLAY DİNLEYİCİLERİ ---
     gamesListEl.addEventListener('click', (e) => {
         if (e.target.tagName === 'LI') selectGame(parseInt(e.target.dataset.id));
     });
@@ -259,15 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-game-modal-btn').addEventListener('click', () => gameModalEl.style.display = 'none');
     document.getElementById('close-report-modal-btn').addEventListener('click', () => reportModalEl.style.display = 'none');
 
-    // --- BAŞLATMA ---
     const initializeApp = async () => {
         populateCheckboxes(document.getElementById('game-platforms'), PLATFORMS);
         populateSelect(document.getElementById('report-verdict'), VERDICTS, "Select Verdict");
         populateSelect(document.getElementById('report-instability'), INSTABILITIES, "Select Instability");
 
         const [gamesData, reportsData] = await Promise.all([
-            apiRequest('/games'),
-            apiRequest('/reports')
+            apiRequest('/api/v1/games'),
+            apiRequest('/api/v1/reports')
         ]);
         allGames = gamesData || [];
         allReports = reportsData || [];
