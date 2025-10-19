@@ -1,170 +1,381 @@
-# NeutronDB API
+# NeutronDB Backend API
 
 ![Java](https://img.shields.io/badge/Java-24-blue.svg)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-brightgreen.svg)
 ![Maven](https://img.shields.io/badge/build-Maven-red.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue.svg)
 
-NeutronDB is a RESTful API backend built with Spring Boot. It's designed to store and manage video game performance reports, with a special focus on compatibility across different operating systems and hardware configurations. This backend provides all the necessary endpoints to create, read, update, and delete (CRUD) games and their associated performance reports.
+A RESTful API backend built with Spring Boot for managing video game performance reports across different operating systems and hardware configurations. This backend provides comprehensive CRUD operations for games and their associated performance reports.
 
-This repository contains the full-stack NeutronDB application, including the Spring Boot REST API backend and the user interface that consumes it.
-## 🖼️ Application Preview
+## 📋 Table of Contents
 
-Here are some snapshots of the NeutronDB frontend in action:
+- [Architecture Overview](#architecture-overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Setup and Installation](#setup-and-installation)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [Development](#development)
 
-<br>
+## 🏗️ Architecture Overview
 
-<div align="center">
-  
-  <h3>Adding a New Game</h3>
-  <img width="800" alt="add_game" src="https://github.com/user-attachments/assets/82f1538b-a26f-4887-b1d0-1beade3b9742" />
-  
-  <br><br>
-  
-  <h3>Listing Reports for a Cyberpunk 2077</h3>
-  <img width="800" alt="list_reports" src="https://github.com/user-attachments/assets/6a3c5746-f5dd-425e-8d28-580b41c95caa" />
-  
-  <br><br>
-  
-  <h3>Editing an Existing Report</h3>
-  <img width="800" alt="edit_reportt" src="https://github.com/user-attachments/assets/fc49be73-028e-4462-8a15-4ad572a8c846" />
-  
-  <br><br>
-  
-  <h3>Creating a New Report</h3>
-  <img width="800" alt="new_report" src="https://github.com/user-attachments/assets/a524016d-23be-4490-8995-9df9a6b823bb" />
-  
-  <br><br>
-  
-  <h3>Listing Reports - Stardew Valley Example</h3>
-  <img width="800" alt="list_reports_stardew" src="https://github.com/user-attachments/assets/64f56515-42cb-40bd-92f2-a2d2fa6ff07e" />
-  
-</div>
+NeutronDB follows a layered architecture pattern:
 
-<br>
-
-
+- **Controller Layer**: RESTful endpoints that handle HTTP requests and responses
+- **Service Layer**: Business logic implementation
+- **Repository Layer**: Data access using Spring Data JPA
+- **Entity Layer**: JPA entities representing database tables
+- **DTO Layer**: Data Transfer Objects for clean API contracts
+- **Mapper Layer**: Entity-DTO conversion using ModelMapper
+- **Exception Handling**: Global exception handler for consistent error responses
 
 ## ✨ Features
 
-- **Game Management:** Add, update, delete, and list games in the database.
-- **Report Management:** Create and manage detailed performance reports for specific games.
-- **RESTful Architecture:** Provides an intuitive API using standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`).
-- **DTO Layer:** Utilizes the Data Transfer Object (DTO) pattern for clean and secure data transfer.
-- **Service Layer:** All business logic is encapsulated within the service layer.
-- **Database Agnostic:** Built with Spring Data JPA, allowing for easy configuration with major SQL databases like PostgreSQL, MySQL, and others.
+- **🎮 Game Management**
+  - Full CRUD operations for game entities
+  - Support for multiple platforms (Windows, Linux, macOS, etc.)
+  - Steam Deck verification status tracking
+  - Genre and developer information management
+
+- **📝 Performance Report Management**
+  - Detailed hardware and software configuration tracking
+  - Verdict system (Platinum, Gold, Silver, Bronze, Borked)
+  - Stability ratings (Stable, Unstable, Very Unstable)
+  - OS distro, kernel, and driver information
+  - GPU, CPU, and RAM specifications
+
+- **🔧 Technical Features**
+  - RESTful API with proper HTTP methods (GET, POST, PUT, DELETE)
+  - DTO pattern for secure data transfer
+  - ModelMapper for automatic entity-DTO conversion
+  - Global exception handling with custom error responses
+  - CORS configuration for frontend integration
+  - Input validation with Spring Validation
+  - Database agnostic with Spring Data JPA
+  - Hot reload with Spring Boot DevTools
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Spring Boot 3.x
-- **Language**: Java 24
-- **Data Persistence**: Spring Data JPA / Hibernate
-- **API**: Spring Web (REST Controllers)
-- **Utilities**: Lombok, Spring Boot DevTools
-- **Build Tool**: Apache Maven
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Spring Boot 3.5.3 |
+| **Language** | Java 24 |
+| **Build Tool** | Apache Maven |
+| **Data Persistence** | Spring Data JPA / Hibernate |
+| **Database** | PostgreSQL (configurable) |
+| **API** | Spring Web (REST Controllers) |
+| **Object Mapping** | ModelMapper 3.2.4 |
+| **Validation** | Spring Boot Starter Validation |
+| **Code Generation** | Lombok |
+| **Development** | Spring Boot DevTools |
+
+## 📁 Project Structure
+
+```
+backend/NeutronDB/src/main/java/com/neutrondb/neutrondb/
+├── config/
+│   ├── MapperConfig.java          # ModelMapper configuration
+│   └── WebConfig.java              # CORS and web configuration
+├── controller/
+│   ├── GameController.java         # Game REST endpoints
+│   └── ReportController.java       # Report REST endpoints
+├── domain/
+│   ├── dto/
+│   │   ├── GameDTO.java           # Game data transfer object
+│   │   └── ReportDTO.java         # Report data transfer object
+│   ├── entities/
+│   │   ├── GameEntity.java        # Game JPA entity
+│   │   └── ReportEntity.java      # Report JPA entity
+│   └── enums/
+│       ├── Instability.java       # Stability enum
+│       ├── Platform.java          # Platform enum
+│       └── Verdict.java           # Verdict enum
+├── exception/
+│   ├── ApiError.java              # Custom error response
+│   └── GlobalExceptionHandler.java # Global exception handler
+├── mapper/
+│   ├── Mapper.java                # Generic mapper interface
+│   └── impl/
+│       ├── GameMapper.java        # Game entity-DTO mapper
+│       └── ReportMapper.java      # Report entity-DTO mapper
+├── repository/
+│   ├── GameRepository.java        # Game data access
+│   └── ReportRepository.java      # Report data access
+├── service/
+│   ├── GameService.java           # Game business logic
+│   └── ReportService.java         # Report business logic
+└── NeutronDbApplication.java      # Application entry point
+```
 
 ## 🚀 Setup and Installation
 
-Follow these steps to get the project running on your local machine.
-
 ### Prerequisites
 
-- JDK 24 or later
-- Apache Maven
-- A running SQL database instance (e.g., PostgreSQL, MySQL)
+- **JDK 24** or later ([Download](https://www.oracle.com/java/technologies/downloads/))
+- **Apache Maven** 3.8+ ([Download](https://maven.apache.org/download.cgi))
+- **PostgreSQL** 12+ ([Download](https://www.postgresql.org/download/))
 
-### Steps
+### Installation Steps
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/MasterCockatoo/NeutronDB.git](https://github.com/MasterCockatoo/NeutronDB.git)
-    cd NeutronDB
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/MasterCockatoo/NeutronDB.git
+   cd NeutronDB/backend/NeutronDB
+   ```
 
-2.  **Configure the database connection:**
-    - Open the `src/main/resources/application.properties` file.
-    - Add the connection properties for your database, including the URL, username, and password. See the **Configuration** section below for an example using PostgreSQL.
+2. **Set up PostgreSQL database:**
+   ```sql
+   CREATE DATABASE neutrondb;
+   ```
 
-3.  **Compile and run the project using Maven:**
-    ```bash
-    mvn spring-boot:run
-    ```
+3. **Configure database connection:**
+   
+   Edit `src/main/resources/application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/neutrondb
+   spring.datasource.username=your_username
+   spring.datasource.password=your_password
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+   ```
 
-4.  The application will start on the default port `8080`. You can now send requests to the API endpoints.
+4. **Build the project:**
+   ```bash
+   mvn clean install
+   ```
 
-## API Endpoints
+5. **Run the application:**
+   ```bash
+   mvn spring-boot:run
+   ```
+
+6. **Verify the application:**
+   
+   The server will start on `http://localhost:8080`
+   
+   Test with: `curl http://localhost:8080/api/v1/games`
+
+## 📡 API Endpoints
+
+All endpoints are prefixed with `/api/v1`
 
 ### 🎮 Game Endpoints
 
-| HTTP Method | Endpoint          | Description                          |
-|-------------|-------------------|--------------------------------------|
-| `GET`       | `/games`          | Retrieves a list of all games.       |
-| `GET`       | `/games/{id}`     | Retrieves a specific game by its ID. |
-| `POST`      | `/games`          | Adds a new game.                     |
-| `PUT`       | `/games/{id}`     | Updates an existing game by its ID.  |
-| `DELETE`    | `/games/{id}`     | Deletes a specific game by its ID.   |
+| Method | Endpoint | Description | Request Body |
+|--------|----------|-------------|--------------|
+| `GET` | `/api/v1/games` | Retrieve all games | - |
+| `GET` | `/api/v1/games/{id}` | Retrieve game by ID | - |
+| `POST` | `/api/v1/games` | Create new game | GameDTO |
+| `PUT` | `/api/v1/games/{id}` | Update existing game | GameDTO |
+| `DELETE` | `/api/v1/games/{id}` | Delete game by ID | - |
+| `DELETE` | `/api/v1/games` | Delete all games | - |
 
 ### 📝 Report Endpoints
 
-| HTTP Method | Endpoint          | Description                            |
-|-------------|-------------------|----------------------------------------|
-| `GET`       | `/reports`        | Retrieves a list of all reports.       |
-| `GET`       | `/reports/{id}`   | Retrieves a specific report by its ID. |
-| `POST`      | `/reports`        | Adds a new report.                     |
-| `PUT`       | `/reports/{id}`   | Updates an existing report by its ID.  |
-| `DELETE`    | `/reports/{id}`   | Deletes a specific report by its ID.   |
+| Method | Endpoint | Description | Request Body |
+|--------|----------|-------------|--------------|
+| `GET` | `/api/v1/reports` | Retrieve all reports | - |
+| `GET` | `/api/v1/reports/{id}` | Retrieve report by ID | - |
+| `POST` | `/api/v1/reports` | Create new report | ReportDTO |
+| `PUT` | `/api/v1/reports/{id}` | Update existing report | ReportDTO |
+| `DELETE` | `/api/v1/reports/{id}` | Delete report by ID | - |
+| `DELETE` | `/api/v1/reports` | Delete all reports | - |
 
-### Example Requests
+### 📤 Example Requests
 
-**To add a new game via `POST /games`:**
+**Create a new game:**
 ```bash
-curl -X POST http://localhost:8080/games \
+curl -X POST http://localhost:8080/api/v1/games \
 -H "Content-Type: application/json" \
 -d '{
-    "name": "Elden Ring",
-    "developer": "FromSoftware",
-    "genre": "Action RPG",
-    "platforms": ["WINDOWS"],
-    "deckVerifiedStatus": true
+  "name": "Elden Ring",
+  "developer": "FromSoftware",
+  "genre": "Action RPG",
+  "platforms": ["WINDOWS", "PLAYSTATION", "XBOX"],
+  "deckVerifiedStatus": true
 }'
 ```
 
-**To add a new report via `POST /reports`:**
+**Create a performance report:**
 ```bash
-curl -X POST http://localhost:8080/reports \
+curl -X POST http://localhost:8080/api/v1/reports \
 -H "Content-Type: application/json" \
 -d '{
-    "gameId": 1,
-    "body": "Runs flawlessly on high settings with a stable frame rate.",
-    "verdict": "PLATINUM",
-    "instability": "STABLE",
-    "overallRating": "10/10",
-    "multiplayerRating": "8/10",
-    "distro": "Fedora 40",
-    "kernel": "6.9.5-200.fc40.x86_64",
-    "ramGb": 32,
-    "gpuDriver": "Mesa 24.1.2",
-    "gpuModel": "AMD Radeon RX 6600",
-    "cpuModel": "AMD Ryzen 5 3600"
+  "gameId": 1,
+  "body": "Runs flawlessly on high settings with stable 60 FPS.",
+  "verdict": "PLATINUM",
+  "instability": "STABLE",
+  "overallRating": "10/10",
+  "multiplayerRating": "9/10",
+  "distro": "Fedora 40",
+  "kernel": "6.9.5-200.fc40.x86_64",
+  "ramGb": 32,
+  "gpuDriver": "Mesa 24.1.2",
+  "gpuModel": "AMD Radeon RX 6600",
+  "cpuModel": "AMD Ryzen 5 3600"
 }'
 ```
+
+**Get all games:**
+```bash
+curl http://localhost:8080/api/v1/games
+```
+
+**Update a game:**
+```bash
+curl -X PUT http://localhost:8080/api/v1/games/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Elden Ring",
+  "developer": "FromSoftware",
+  "genre": "Action RPG",
+  "platforms": ["WINDOWS", "PLAYSTATION", "XBOX"],
+  "deckVerifiedStatus": true
+}'
+```
+
+**Delete a report:**
+```bash
+curl -X DELETE http://localhost:8080/api/v1/reports/1
+```
+
+### 📝 Data Models
+
+**GameDTO:**
+```json
+{
+  "id": 1,
+  "name": "Elden Ring",
+  "developer": "FromSoftware",
+  "genre": "Action RPG",
+  "platforms": ["WINDOWS", "PLAYSTATION", "XBOX"],
+  "deckVerifiedStatus": true
+}
+```
+
+**ReportDTO:**
+```json
+{
+  "id": 1,
+  "gameId": 1,
+  "body": "Performance description",
+  "verdict": "PLATINUM",
+  "instability": "STABLE",
+  "overallRating": "10/10",
+  "multiplayerRating": "9/10",
+  "distro": "Fedora 40",
+  "kernel": "6.9.5-200.fc40.x86_64",
+  "ramGb": 32,
+  "gpuDriver": "Mesa 24.1.2",
+  "gpuModel": "AMD Radeon RX 6600",
+  "cpuModel": "AMD Ryzen 5 3600"
+}
+```
+
+**Enum Values:**
+- **Verdict**: `PLATINUM`, `GOLD`, `SILVER`, `BRONZE`, `BORKED`
+- **Instability**: `STABLE`, `UNSTABLE`, `VERY_UNSTABLE`
+- **Platform**: `WINDOWS`, `LINUX`, `MACOS`, `PLAYSTATION`, `XBOX`, `NINTENDO_SWITCH`, `STEAM_DECK`
 
 ## ⚙️ Configuration
 
-This project requires a connection to an SQL database. You must provide the configuration details in the `src/main/resources/application.properties` file.
+### Database Configuration
 
-Below is a sample configuration for connecting to a **PostgreSQL** database.
-
+**PostgreSQL (Default):**
 ```properties
-# PostgreSQL Database Configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/your_database_name
-spring.datasource.username=your_postgres_username
-spring.datasource.password=your_postgres_password
-
-# JPA / Hibernate Settings
+spring.datasource.url=jdbc:postgresql://localhost:5432/neutrondb
+spring.datasource.username=postgres
+spring.datasource.password=password
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
 
-# When set to "update", Hibernate will automatically update the database schema
-# based on your entities. Use "validate" in production.
+**MySQL:**
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/neutrondb
+spring.datasource.username=root
+spring.datasource.password=password
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 spring.jpa.hibernate.ddl-auto=update
 ```
-*Remember to replace the placeholder values (`your_database_name`, `your_postgres_username`, `your_postgres_password`) with your actual database credentials.*
+
+**H2 (For Testing):**
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+```
+
+### Application Properties
+
+Additional configuration options:
+
+```properties
+# Server port (default: 8080)
+server.port=8080
+
+# Logging level
+logging.level.com.neutrondb.neutrondb=DEBUG
+
+# JPA settings
+spring.jpa.open-in-view=false
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# CORS configuration (already configured in WebConfig)
+# See src/main/java/com/neutrondb/neutrondb/config/WebConfig.java
+```
+
+## 🔨 Development
+
+### Running Tests
+
+```bash
+mvn test
+```
+
+### Package the Application
+
+```bash
+mvn clean package
+```
+
+The JAR file will be created in `target/NeutronDB-0.0.1-SNAPSHOT.jar`
+
+### Running the JAR
+
+```bash
+java -jar target/NeutronDB-0.0.1-SNAPSHOT.jar
+```
+
+### Hot Reload
+
+Spring Boot DevTools enables automatic restart when code changes. Just save your files and the application will restart automatically.
+
+### Adding Dependencies
+
+Add dependencies to `pom.xml` and run:
+```bash
+mvn clean install
+```
+
+---
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 👨‍💻 Author
+
+Developed by [MasterCockatoo](https://github.com/MasterCockatoo)
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
+---
+
+**Note:** This is the backend API documentation. For frontend documentation, please refer to the `frontend/` directory.
